@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionHex - Custom Apps, Games & Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A;
+            /* slate-900 */
+            color: #E2E8F0;
+            /* slate-200 */
+        }
+
+        /* Parallax container setup */
+        .parallax-container {
+            position: relative;
+            overflow: hidden;
+            /* height is set by Tailwind (h-screen) */
+            will-change: transform;
+            /* Optimization */
+        }
+
+        /* Parallax background element */
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150vh;
+            /* Taller than viewport to allow scroll effect */
+            z-index: 0;
+            /* Behind smoke and content */
+            /* A subtle, sleek gradient */
+            background-image: radial-gradient(circle at 20% 30%,
+                    rgba(59, 130, 246, 0.3),
+                    /* blue-500 with opacity */
+                    rgba(15, 23, 42, 0) 40%
+                    /* transparent slate-900 */
+                ),
+                radial-gradient(circle at 80% 70%,
+                    rgba(249, 115, 22, 0.2),
+                    /* orange-500 with opacity */
+                    rgba(15, 23, 42, 0) 50%
+                    /* transparent slate-900 */
+                );
+            background-color: #0F172A;
+            /* slate-900 */
+        }
+
+        /* Parallax content wrapper */
+        .parallax-content {
+            position: relative;
+            z-index: 10;
+            /* Above bg and smoke */
+        }
+
+        /* Smoke Canvas */
+        #smoke-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            /* Between bg and content */
+            pointer-events: none;
+            /* Allow clicks to pass through */
+        }
+
+        /* Main content wrapper for parallax scroll-over */
+        #main-content {
+            position: relative;
+            z-index: 20;
+            /* Above hero section */
+            background-color: #0F172A;
+            /* Must have bg to cover hero */
+            will-change: transform;
+            /* Optimization */
+        }
+
+        /* Custom gradient for hero text */
+        .hero-text-gradient {
+            background: linear-gradient(to right, #F8FAFC, #60A5FA);
+            /* slate-50 to blue-400 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* Will be animated with JS */
+            will-change: transform, opacity;
+        }
+
+        /* Mobile menu transition */
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Custom focus ring color */
+        .focusable:focus-visible {
+            outline: 2px solid #F97316;
+            /* orange-500 */
+            outline-offset: 2px;
+        }
+
+        /* Ripple effect styles */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 600ms linear;
+            background-color: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* --- REMOVED ---: .content-blur-active class is no longer needed */
+
+        /* Optimize footer for parallax */
+        #contact {
+            will-change: transform;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <div id="menu-overlay"
+        class="fixed top-0 left-0 w-full h-full z-30 backdrop-blur-sm bg-slate-900/60 transition-opacity duration-300 opacity-0"
+        style="display: none;">
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-50 p-4">
+        <nav class="max-w-7xl mx-auto backdrop-blur-md bg-slate-900/80 border border-slate-700/50 rounded-xl shadow-lg">
+            <div class="flex justify-between items-center h-16 px-4 sm:px-6 lg:px-8">
+                <a href="#" class="flex-shrink-0 flex items-center group focusable rounded-md">
+                    <svg class="h-8 w-8 text-blue-500 group-hover:text-blue-400 transition-colors" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                            d="M21 8.66l-6.93 4v8l6.93-4V8.66zM3 8.66l6.93 4v8L3 16.66V8.66zM12 3l6.93 4L12 11 5.07 7 12 3z">
+                        </path>
+                    </svg>
+                    <span class="ml-2 text-xl font-bold text-slate-100 group-hover:text-slate-50 transition-colors">
+                        FusionHex
+                    </span>
+                </a>
+
+                <div class="hidden md:flex md:items-center md:space-x-8">
+                    <a href="#home"
+                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">Home</a>
+                    <a href="#about"
+                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">About</a>
+                    <a href="#projects"
+                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">Projects</a>
+                    <a href="#contact"
+                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">Contact</a>
+                </div>
+
+                <div class="flex items-center md:hidden">
+                    <button id="mobile-menu-button" type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
+                        aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="hamburger-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                        <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div id="mobile-menu"
+            class="md:hidden fixed top-0 right-0 h-full w-72 bg-slate-800/95 backdrop-blur-lg z-40 transform translate-x-full shadow-2xl"
+            aria-labelledby="mobile-menu-button">
+            <div class="pt-24 px-5 space-y-4">
+                <a href="#home"
+                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">Home</a>
+                <a href="#about"
+                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">About</a>
+                <a href="#projects"
+                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">Projects</a>
+                <a href="#contact"
+                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="parallax-container h-screen min-h-[700px]">
+        <div id="parallax-bg" class="parallax-bg"></div>
+
+        <canvas id="smoke-canvas"></canvas>
+
+        <div class="parallax-content h-full flex flex-col items-center justify-center text-center px-4 pt-24">
+            <h1 id="hero-title"
+                class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-4 hero-text-gradient animate-fade-in">
+                FusionHex
+            </h1>
+            <p class="max-w-2xl text-lg md:text-2xl text-slate-200 mb-8 animate-fade-in-delay">
+                Crafting innovative apps, immersive games, and smart tools.
+                <br class="hidden md:block">
+                One line of code at a time.
+            </p>
+            <a href="#projects"
+                class="ripple inline-block bg-orange-600 text-white font-bold text-lg px-8 py-3 rounded-md shadow-lg hover:bg-orange-500 focus:bg-orange-500 transition-all duration-300 transform hover:-translate-y-1 focusable animate-fade-in-delay-2">
+                See My Work
+            </a>
+        </div>
+    </section>
+
+    <div id="main-content">
+        <section id="about" class="py-24 sm:py-32">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="text-base font-semibold leading-7 text-blue-400">About Me</h2>
+                    <p class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                        Solo Developer. Infinite Curiosity.
+                    </p>
+                    <p class="mt-6 text-lg leading-8 text-slate-300">
+                        I'm the solo force behind FusionHex, a creative lab where ideas are forged into digital
+                        realities. My passion lies at the intersection of technology and creativity, whether it's
+                        building a responsive web tool, designing an engaging mobile game, or tinkering with DIY
+                        hardware.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-24 sm:py-32 bg-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center mb-16">
+                    <h2 class="text-base font-semibold leading-7 text-blue-400">My Work</h2>
+                    <p class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                        Featured Creations
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div
+                        class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2">
+                        <div
+                            class="w-16 h-16 bg-blue-600/10 border border-blue-500/30 text-blue-400 rounded-lg flex items-center justify-center mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Custom Apps</h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Sleek, performant applications for web and mobile. Built with modern technology stacks to
+                            solve real-world problems.
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 hover:border-orange-500 transition-all duration-300 transform hover:-translate-y-2">
+                        <div
+                            class="w-16 h-16 bg-orange-600/10 border border-orange-500/30 text-orange-400 rounded-lg flex items-center justify-center mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.875L6 12z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M19.5 12c0-5.433-3.267-10.165-7.854-12.233C11.06 -.012 10.012-.012 9.354.767 8.7 1.547 8.7 2.68 9.354 3.453c2.613 2.053 4.354 5.21 4.354 8.547s-1.74 6.494-4.354 8.547c-.653.773-.653 1.906 0 2.68.653.773 1.708.773 2.292 0C16.233 22.165 19.5 17.433 19.5 12z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Indie Games</h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Immersive and fun game experiences. From simple hyper-casual mobile games to more complex
+                            narrative-driven projects.
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2">
+                        <div
+                            class="w-16 h-16 bg-blue-600/10 border border-blue-500/30 text-blue-400 rounded-lg flex items-center justify-center mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 18.75v-13.5a2.25 2.25 0 012.25-2.25h13.5a2.25 2.25 0 012.25 2.25v13.5a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25zM12 18.75v-6.75a2.25 2.25 0 012.25-2.25h2.25a2.25 2.25 0 012.25 2.25v6.75" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9 18.75v-6.75a2.25 2.25 0 00-2.25-2.25H4.5A2.25 2.25 0 002.25 12v6.75" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9v6.75h6V12z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 12V9.75a2.25 2.25 0 012.25-2.25h2.25a2.25 2.25 0 012.25 2.25V12" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 12V9.75a2.25 2.25 0 00-2.25-2.25H7.5A2.25 2.25 0 005.25 9.75V12" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 12H9.75a2.25 2.25 0 01-2.25-2.25V7.5A2.25 2.25 0 019.75 5.25H12" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 12h2.25a2.25 2.25 0 002.25-2.25V7.5A2.25 2.25 0 0014.25 5.25H12" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 12V9.75a2.25 2.25 0 012.25-2.25h2.25" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 12V9.75a2.25 2.25 0 00-2.25-2.25H7.5" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Tools & DIY Hardware</h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Handy developer utilities and explorations into the world of DIY electronics, IoT, and
+                            custom-built hardware.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    <footer id="contact"
+        class="bg-slate-800/60 border border-slate-700/50 mt-24 max-w-7xl mx-auto rounded-xl shadow-lg mb-8">
+        <div class="px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                <div class="mb-8 md:mb-0">
+                    <h4 class="text-lg font-bold text-white mb-4">Get in Touch</h4>
+                    <a href="mailto:hello@fusionhex.com"
+                        class="text-slate-300 hover:text-blue-400 transition-colors focusable rounded-md">
+                        hello@fusionhex.com
+                    </a>
+                    <nav class="flex justify-center md:justify-start space-x-6 mt-6">
+                        <a href="#about"
+                            class="text-slate-400 hover:text-white transition-colors text-sm focusable rounded-md">About</a>
+                        <a href="#projects"
+                            class="text-slate-400 hover:text-white transition-colors text-sm focusable rounded-md">Projects</a>
+                    </nav>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end">
+                    <a href="#" class="flex items-center group mb-4 focusable rounded-md">
+                        <svg class="h-6 w-6 text-blue-500 group-hover:text-blue-400 transition-colors"
+                            fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M21 8.66l-6.93 4v8l6.93-4V8.66zM3 8.66l6.93 4v8L3 16.66V8.66zM12 3l6.93 4L12 11 5.07 7 12 3z">
+                            </path>
+                        </svg>
+                        <span class="ml-2 text-lg font-bold text-slate-100 group-hover:text-slate-50 transition-colors">
+                            FusionHex
+                        </span>
+                    </a>
+                    <p class="text-sm text-slate-400">
+                        &copy; 2025 FusionHex. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Cache Elements ---
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeIcon = document.getElementById('close-icon');
+            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+            const parallaxBg = document.getElementById('parallax-bg');
+            const heroTitle = document.getElementById('hero-title');
+            const heroSection = document.getElementById('home');
+
+            // --- MODIFIED ---: Cache new/changed elements
+            const mainContent = document.getElementById('main-content');
+            const footer = document.getElementById('contact');
+            const menuOverlay = document.getElementById('menu-overlay'); // NEW
+            let footerTop = footer.offsetTop;
+
+
+            // --- Mobile Menu Toggle ---
+            function toggleMenu(isOpen) {
+                if (isOpen) {
+                    mobileMenu.classList.remove('translate-x-full');
+                    hamburgerIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                    menuButton.setAttribute('aria-expanded', 'true');
+
+                    // --- NEW: Show overlay ---
+                    menuOverlay.style.display = 'block';
+                    requestAnimationFrame(() => {
+                        menuOverlay.style.opacity = 1;
+                    });
+
+                } else {
+                    mobileMenu.classList.add('translate-x-full');
+                    hamburgerIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    menuButton.setAttribute('aria-expanded', 'false');
+
+                    // --- NEW: Hide overlay ---
+                    menuOverlay.style.opacity = 0;
+                    setTimeout(() => {
+                        menuOverlay.style.display = 'none';
+                    }, 300); // Match transition duration
+                }
+            }
+
+            menuButton.addEventListener('click', () => {
+                const isOpen = menuButton.getAttribute('aria-expanded') === 'false';
+                toggleMenu(isOpen);
+            });
+
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    toggleMenu(false);
+                });
+            });
+
+            // --- NEW: Add click listener for the overlay ---
+            menuOverlay.addEventListener('click', () => {
+                toggleMenu(false);
+            });
+
+            // --- Ripple Effect ---
+            document.querySelectorAll('.ripple').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    // Remove any existing ripples
+                    const oldRipple = this.querySelector('.ripple-effect');
+                    if (oldRipple) {
+                        oldRipple.remove();
+                    }
+
+                    const span = document.createElement('span');
+                    span.classList.add('ripple-effect');
+
+                    const diameter = Math.max(this.clientWidth, this.clientHeight);
+                    const radius = diameter / 2;
+
+                    span.style.width = span.style.height = `${diameter}px`;
+                    span.style.left = `${e.clientX - (this.getBoundingClientRect().left + radius)}px`;
+                    span.style.top = `${e.clientY - (this.getBoundingClientRect().top + radius)}px`;
+
+                    this.appendChild(span);
+
+                    span.addEventListener('animationend', () => {
+                        span.remove();
+                    });
+                });
+            });
+
+            // --- Parallax & Hero Animation on Scroll ---
+            window.addEventListener('scroll', function () {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+
+                // 1. Parallax Background
+                if (parallaxBg) {
+                    parallaxBg.style.transform = `translateY(${scrollY * 0.4}px)`;
+                }
+
+                // 2. Hero Title Animation (Scale, Move, Fade)
+                if (heroTitle && scrollY < windowHeight) {
+                    const scale = 1 + scrollY * 0.0015;
+                    const translateY = -scrollY * 0.5;
+                    const opacity = Math.max(0, 1 - (scrollY / (windowHeight / 1.5)));
+
+                    heroTitle.style.transform = `translateY(${translateY}px) scale(${scale})`;
+                    heroTitle.style.opacity = opacity;
+                }
+
+                // 3. Footer Parallax
+                const scrollBottom = scrollY + windowHeight;
+                if (footer && scrollBottom > footerTop) {
+                    const amountVisible = scrollBottom - footerTop;
+                    const translateY = amountVisible * 0.3;
+                    footer.style.transform = `translateY(${translateY}px)`;
+                } else if (footer) {
+                    footer.style.transform = 'translateY(0px)';
+                }
+            });
+
+            // --- Smooth Scroll for Nav Links ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (!this.classList.contains('mobile-menu-link')) {
+                        e.preventDefault();
+                    }
+
+                    const targetId = this.getAttribute('href');
+
+                    if (targetId && targetId !== '#') {
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            if (this.classList.contains('mobile-menu-link')) {
+                                setTimeout(() => {
+                                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                                }, 300);
+                            } else {
+                                targetElement.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }
+                    } else if (targetId === '#') {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- Simple Fade-in Animations on Load ---
+            document.querySelector('.animate-fade-in').style.opacity = 1;
+            setTimeout(() => {
+                document.querySelector('.animate-fade-in-delay').style.opacity = 1;
+            }, 300);
+            setTimeout(() => {
+                document.querySelector('.animate-fade-in-delay-2').style.opacity = 1;
+            }, 600);
+
+            // --- Smoke Canvas Effect ---
+            const smokeCanvas = document.getElementById('smoke-canvas');
+            let canvasWidth, canvasHeight; // Make them accessible to resize listener
+
+            if (smokeCanvas) {
+                const ctx = smokeCanvas.getContext('2d');
+                let particles = [];
+                let mouse = { x: null, y: null, radius: 50 };
+                canvasWidth = smokeCanvas.offsetWidth;
+                canvasHeight = smokeCanvas.offsetHeight;
+                smokeCanvas.width = canvasWidth;
+                smokeCanvas.height = canvasHeight;
+
+                // Update mouse position (relative to canvas)
+                const heroRect = heroSection.getBoundingClientRect();
+                window.addEventListener('mousemove', (e) => {
+                    mouse.x = e.clientX - heroRect.left;
+                    mouse.y = e.clientY - heroRect.top;
+                });
+                window.addEventListener('mouseout', () => {
+                    mouse.x = null;
+                    mouse.y = null;
+                });
+
+                class Particle {
+                    constructor(x, y) {
+                        this.x = x;
+                        this.y = y;
+                        this.size = Math.random() * 2 + 1;
+                        this.speedX = (Math.random() * 2 - 1) * 0.5;
+                        this.speedY = Math.random() * -1 - 0.5;
+                        this.alpha = 1;
+                        this.color = 'rgba(100, 116, 139, 0.3)'; // slate-500 with opacity
+                    }
+                    update() {
+                        if (mouse.x !== null) {
+                            let dx = this.x - mouse.x;
+                            let dy = this.y - mouse.y;
+                            let distance = Math.sqrt(dx * dx + dy * dy);
+                            if (distance < mouse.radius) {
+                                this.x += dx / distance * 1.5;
+                                this.y += dy / distance * 1.5;
+                            }
+                        }
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        this.alpha -= 0.005;
+                        if (this.size < 10) {
+                            this.size += 0.05;
+                        }
+                    }
+                    draw() {
+                        ctx.globalAlpha = this.alpha;
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                function createParticles() {
+                    if (particles.length < 150) {
+                        let x = (canvasWidth / 2) + (Math.random() * 200 - 100);
+                        let y = canvasHeight - 50 + (Math.random() * 50);
+                        particles.push(new Particle(x, y));
+                    }
+                }
+
+                function animateParticles() {
+                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                    createParticles();
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+                        if (particles[i].alpha <= 0) {
+                            particles.splice(i, 1);
+                            i--;
+                        }
+                    }
+                    requestAnimationFrame(animateParticles);
+                }
+
+                // Start the animation
+                animateParticles();
+            }
+
+            // --- NEW: Consolidated Resize Handler ---
+            window.addEventListener('resize', () => {
+                // Handle smoke canvas resize
+                if (smokeCanvas) {
+                    canvasWidth = smokeCanvas.offsetWidth;
+                    canvasHeight = smokeCanvas.offsetHeight;
+                    smokeCanvas.width = canvasWidth;
+                    smokeCanvas.height = canvasHeight;
+                }
+                // Update footer position
+                footerTop = footer.offsetTop;
+
+                // Handle mobile menu close on wider screens (md breakpoint = 768px)
+                if (window.innerWidth >= 768 && menuButton.getAttribute('aria-expanded') === 'true') {
+                    toggleMenu(false);
+                }
+            });
+
+        }); // --- End DOMContentLoaded ---
+
+        // Add temporary styles for the animations
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .animate-fade-in, .animate-fade-in-delay, .animate-fade-in-delay-2 {
+                opacity: 0;
+                transition: opacity 0.8s ease-out;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+</body>
+
+</html>
