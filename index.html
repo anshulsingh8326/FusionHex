@@ -4,123 +4,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FusionHex - Custom Apps, Games & Tools</title>
+    <title>FusionHex - Game, App & Tool Development</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
     <style>
-        /* Base styles */
+        /* Custom styles for the app */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0F172A;
-            /* slate-900 */
-            color: #E2E8F0;
-            /* slate-200 */
+            background-color: #1a1716;
+            /* OLD: #111827 (bg-gray-900) */
+            color: #f3f4f6;
+            /* text-gray-100 */
+            overflow-x: hidden;
         }
 
-        /* Parallax container setup */
-        .parallax-container {
-            position: relative;
-            overflow: hidden;
-            /* height is set by Tailwind (h-screen) */
-            will-change: transform;
-            /* Optimization */
-        }
-
-        /* Parallax background element */
-        .parallax-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 150vh;
-            /* Taller than viewport to allow scroll effect */
-            z-index: 0;
-            /* Behind smoke and content */
-            /* A subtle, sleek gradient */
-            background-image: radial-gradient(circle at 20% 30%,
-                    rgba(59, 130, 246, 0.3),
-                    /* blue-500 with opacity */
-                    rgba(15, 23, 42, 0) 40%
-                    /* transparent slate-900 */
-                ),
-                radial-gradient(circle at 80% 70%,
-                    rgba(249, 115, 22, 0.2),
-                    /* orange-500 with opacity */
-                    rgba(15, 23, 42, 0) 50%
-                    /* transparent slate-900 */
-                );
-            background-color: #0F172A;
-            /* slate-900 */
-        }
-
-        /* Parallax content wrapper */
-        .parallax-content {
-            position: relative;
-            z-index: 10;
-            /* Above bg and smoke */
-        }
-
-        /* Smoke Canvas */
-        #smoke-canvas {
-            position: absolute;
+        /* Hero canvas for background animation */
+        #hero-canvas {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 5;
-            /* Between bg and content */
-            pointer-events: none;
-            /* Allow clicks to pass through */
+            z-index: 0;
+            /* Behind all content */
         }
 
-        /* Main content wrapper for parallax scroll-over */
-        #main-content {
+        /* Ensure content sections scroll OVER the canvas */
+        .content-section {
             position: relative;
-            z-index: 20;
-            /* Above hero section */
-            background-color: #0F172A;
-            /* Must have bg to cover hero */
-            will-change: transform;
-            /* Optimization */
+            z-index: 10;
+            background-color: #1a1716;
+            /* OLD: #111827 (bg-gray-900) */
         }
 
-        /* Custom gradient for hero text */
-        .hero-text-gradient {
-            background: linear-gradient(to right, #F8FAFC, #60A5FA);
-            /* slate-50 to blue-400 */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            /* Will be animated with JS */
-            will-change: transform, opacity;
+        /* Frosted glass effect for navbar (Tailwind's backdrop-blur) */
+        .frosted-glass {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Mobile menu transition */
-        #mobile-menu {
-            transition: transform 0.3s ease-in-out;
+        /* Custom neon text shadow for the main title */
+        #company-name {
+            text-shadow: 0 0 8px rgba(255, 165, 0, 0.7),
+                0 0 16px rgba(255, 165, 0, 0.5),
+                0 0 24px rgba(255, 165, 0, 0.3);
+            transition: transform 0.1s linear, opacity 0.1s linear;
         }
 
-        /* Custom focus ring color */
-        .focusable:focus-visible {
-            outline: 2px solid #F97316;
-            /* orange-500 */
-            outline-offset: 2px;
+        /* Gradient Blur at the bottom of the hero section */
+        #hero-gradient-blur {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10%;
+            /* Adjust as needed for 5-10% */
+            background: linear-gradient(to top, #1a1716 10%, transparent 100%);
+            z-index: 10;
+            /* Above canvas, below content */
+            pointer-events: none;
+            /* Allows clicks to pass through */
         }
 
-        /* Ripple effect styles */
-        .ripple {
+        /* Scroll Down Arrow Animation */
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .scroll-down-arrow {
+            animation: bounce 2s infinite;
+        }
+
+        /* --- NEW: Custom color overrides --- */
+        #services,
+        #contact {
+            background-color: #2a2726;
+            /* Lighter variant of #1a1716 */
+        }
+
+        .service-card {
+            background-color: #1a1716;
+            /* Base dark */
+        }
+
+        #sidebar {
+            background-color: rgba(26, 23, 22, 0.8);
+            /* Base dark #1a1716 + alpha */
+        }
+
+        /* --- End new styles --- */
+
+        /* --- NEW: Button & Ripple Styles --- */
+        .btn-primary {
             position: relative;
             overflow: hidden;
+            /* Horizontal gradient */
+            background-image: linear-gradient(to right, #f97316 0%, #fb923c 100%);
+            /* orange-600 to orange-500 */
+            transition: all 0.3s ease-out;
+            z-index: 1;
+            /* Keep content above potential pseudo-elements */
+            display: inline-block;
+            /* Added for proper behavior of <a> tag */
         }
 
-        .ripple-effect {
+        .btn-primary:hover {
+            /* Brighter gradient on hover */
+            background-image: linear-gradient(to right, #fb923c 0%, #f97316 100%);
+            /* orange-500 to pink-300 */
+            box-shadow: 0 4px 15px rgba(251, 146, 60, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .btn-primary .ripple {
             position: absolute;
             border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
             transform: scale(0);
             animation: ripple 600ms linear;
-            background-color: rgba(255, 255, 255, 0.4);
             pointer-events: none;
+            /* Make sure it doesn't block clicks */
         }
 
         @keyframes ripple {
@@ -130,521 +153,551 @@
             }
         }
 
-        /* --- REMOVED ---: .content-blur-active class is no longer needed */
-
-        /* Optimize footer for parallax */
-        #contact {
-            will-change: transform;
-        }
+        /* --- End new styles --- */
     </style>
 </head>
 
 <body class="antialiased">
 
-    <div id="menu-overlay"
-        class="fixed top-0 left-0 w-full h-full z-30 backdrop-blur-sm bg-slate-900/60 transition-opacity duration-300 opacity-0"
-        style="display: none;">
-    </div>
+    <canvas id="hero-canvas"></canvas>
 
     <header class="fixed top-0 left-0 right-0 z-50 p-4">
-        <nav class="max-w-7xl mx-auto backdrop-blur-md bg-slate-900/80 border border-slate-700/50 rounded-xl shadow-lg">
-            <div class="flex justify-between items-center h-16 px-4 sm:px-6 lg:px-8">
-                <a href="#" class="flex-shrink-0 flex items-center group focusable rounded-md">
-                    <svg class="h-8 w-8 text-blue-500 group-hover:text-blue-400 transition-colors" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M21 8.66l-6.93 4v8l6.93-4V8.66zM3 8.66l6.93 4v8L3 16.66V8.66zM12 3l6.93 4L12 11 5.07 7 12 3z">
-                        </path>
+        <nav class="max-w-6xl mx-auto flex justify-between items-center p-3 px-6 rounded-full frosted-glass">
+            <a href="#" class="text-2xl font-bold text-white tracking-tight">
+                FusionHex
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#about" class="text-gray-200 hover:text-orange-400 transition-colors">About</a>
+                <a href="#services" class="text-gray-200 hover:text-orange-400 transition-colors">Services</a>
+                <a href="#tools" class="text-gray-200 hover:text-orange-400 transition-colors">Tools</a>
+                <a href="#contact" class="text-gray-200 hover:text-orange-400 transition-colors">Contact</a>
+            </div>
+
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-white p-2 rounded-md" aria-label="Open menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7" />
                     </svg>
-                    <span class="ml-2 text-xl font-bold text-slate-100 group-hover:text-slate-50 transition-colors">
-                        FusionHex
-                    </span>
-                </a>
-
-                <div class="hidden md:flex md:items-center md:space-x-8">
-                    <a href="#home"
-                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">Home</a>
-                    <a href="#about"
-                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">About</a>
-                    <a href="#projects"
-                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">Projects</a>
-                    <a href="#contact"
-                        class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors focusable">Contact</a>
-                </div>
-
-                <div class="flex items-center md:hidden">
-                    <button id="mobile-menu-button" type="button"
-                        class="inline-flex items-center justify-center p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500"
-                        aria-controls="mobile-menu" aria-expanded="false">
-                        <span class="sr-only">Open main menu</span>
-                        <svg id="hamburger-icon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
-                        <svg id="close-icon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
+                </button>
             </div>
         </nav>
-
-        <div id="mobile-menu"
-            class="md:hidden fixed top-0 right-0 h-full w-72 bg-slate-800/95 backdrop-blur-lg z-40 transform translate-x-full shadow-2xl"
-            aria-labelledby="mobile-menu-button">
-            <div class="pt-24 px-5 space-y-4">
-                <a href="#home"
-                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">Home</a>
-                <a href="#about"
-                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">About</a>
-                <a href="#projects"
-                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">Projects</a>
-                <a href="#contact"
-                    class="mobile-menu-link block px-3 py-2 rounded-md text-base font-medium text-slate-100 hover:bg-slate-700 focusable">Contact</a>
-            </div>
-        </div>
     </header>
 
-    <section id="home" class="parallax-container h-screen min-h-[700px]">
-        <div id="parallax-bg" class="parallax-bg"></div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-[59] hidden md:hidden"></div>
 
-        <canvas id="smoke-canvas"></canvas>
-
-        <div class="parallax-content h-full flex flex-col items-center justify-center text-center px-4 pt-24">
-            <h1 id="hero-title"
-                class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-4 hero-text-gradient animate-fade-in">
-                FusionHex
-            </h1>
-            <p class="max-w-2xl text-lg md:text-2xl text-slate-200 mb-8 animate-fade-in-delay">
-                Crafting innovative apps, immersive games, and smart tools.
-                <br class="hidden md:block">
-                One line of code at a time.
-            </p>
-            <a href="#projects"
-                class="ripple inline-block bg-orange-600 text-white font-bold text-lg px-8 py-3 rounded-md shadow-lg hover:bg-orange-500 focus:bg-orange-500 transition-all duration-300 transform hover:-translate-y-1 focusable animate-fade-in-delay-2">
-                See My Work
-            </a>
+    <div id="sidebar"
+        class="fixed top-0 right-0 h-full w-64 backdrop-blur-xl z-[60] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="flex justify-end p-4">
+            <button id="close-btn" class="text-white p-2 rounded-md" aria-label="Close menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
-    </section>
-
-    <div id="main-content">
-        <section id="about" class="py-24 sm:py-32">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="max-w-3xl mx-auto text-center">
-                    <h2 class="text-base font-semibold leading-7 text-blue-400">About Me</h2>
-                    <p class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                        Solo Developer. Infinite Curiosity.
-                    </p>
-                    <p class="mt-6 text-lg leading-8 text-slate-300">
-                        I'm the solo force behind FusionHex, a creative lab where ideas are forged into digital
-                        realities. My passion lies at the intersection of technology and creativity, whether it's
-                        building a responsive web tool, designing an engaging mobile game, or tinkering with DIY
-                        hardware.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects" class="py-24 sm:py-32 bg-slate-800/60">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="max-w-3xl mx-auto text-center mb-16">
-                    <h2 class="text-base font-semibold leading-7 text-blue-400">My Work</h2>
-                    <p class="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                        Featured Creations
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div
-                        class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2">
-                        <div
-                            class="w-16 h-16 bg-blue-600/10 border border-blue-500/30 text-blue-400 rounded-lg flex items-center justify-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-8 h-8">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Custom Apps</h3>
-                        <p class="text-slate-300 leading-relaxed">
-                            Sleek, performant applications for web and mobile. Built with modern technology stacks to
-                            solve real-world problems.
-                        </p>
-                    </div>
-
-                    <div
-                        class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 hover:border-orange-500 transition-all duration-300 transform hover:-translate-y-2">
-                        <div
-                            class="w-16 h-16 bg-orange-600/10 border border-orange-500/30 text-orange-400 rounded-lg flex items-center justify-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-8 h-8">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.875L6 12z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M19.5 12c0-5.433-3.267-10.165-7.854-12.233C11.06 -.012 10.012-.012 9.354.767 8.7 1.547 8.7 2.68 9.354 3.453c2.613 2.053 4.354 5.21 4.354 8.547s-1.74 6.494-4.354 8.547c-.653.773-.653 1.906 0 2.68.653.773 1.708.773 2.292 0C16.233 22.165 19.5 17.433 19.5 12z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Indie Games</h3>
-                        <p class="text-slate-300 leading-relaxed">
-                            Immersive and fun game experiences. From simple hyper-casual mobile games to more complex
-                            narrative-driven projects.
-                        </p>
-                    </div>
-
-                    <div
-                        class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2">
-                        <div
-                            class="w-16 h-16 bg-blue-600/10 border border-blue-500/30 text-blue-400 rounded-lg flex items-center justify-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-8 h-8">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.75 18.75v-13.5a2.25 2.25 0 012.25-2.25h13.5a2.25 2.25 0 012.25 2.25v13.5a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25zM12 18.75v-6.75a2.25 2.25 0 012.25-2.25h2.25a2.25 2.25 0 012.25 2.25v6.75" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9 18.75v-6.75a2.25 2.25 0 00-2.25-2.25H4.5A2.25 2.25 0 002.25 12v6.75" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9v6.75h6V12z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 12V9.75a2.25 2.25 0 012.25-2.25h2.25a2.25 2.25 0 012.25 2.25V12" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 12V9.75a2.25 2.25 0 00-2.25-2.25H7.5A2.25 2.25 0 005.25 9.75V12" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 12H9.75a2.25 2.25 0 01-2.25-2.25V7.5A2.25 2.25 0 019.75 5.25H12" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 12h2.25a2.25 2.25 0 002.25-2.25V7.5A2.25 2.25 0 0014.25 5.25H12" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 12V9.75a2.25 2.25 0 012.25-2.25h2.25" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 12V9.75a2.25 2.25 0 00-2.25-2.25H7.5" />
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Tools & DIY Hardware</h3>
-                        <p class="text-slate-300 leading-relaxed">
-                            Handy developer utilities and explorations into the world of DIY electronics, IoT, and
-                            custom-built hardware.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+        <nav class="flex flex-col space-y-6 px-6">
+            <a href="#about"
+                class="text-gray-200 hover:text-orange-400 transition-colors text-lg sidebar-link">About</a>
+            <a href="#services"
+                class="text-gray-200 hover:text-orange-400 transition-colors text-lg sidebar-link">Services</a>
+            <a href="#tools"
+                class="text-gray-200 hover:text-orange-400 transition-colors text-lg sidebar-link">Tools</a>
+            <a href="#contact"
+                class="text-gray-200 hover:text-orange-400 transition-colors text-lg sidebar-link">Contact</a>
+        </nav>
     </div>
-    <footer id="contact"
-        class="bg-slate-800/60 border border-slate-700/50 mt-24 max-w-7xl mx-auto rounded-xl shadow-lg mb-8">
-        <div class="px-4 sm:px-6 lg:px-8 py-16">
-            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-                <div class="mb-8 md:mb-0">
-                    <h4 class="text-lg font-bold text-white mb-4">Get in Touch</h4>
-                    <a href="mailto:hello@fusionhex.com"
-                        class="text-slate-300 hover:text-blue-400 transition-colors focusable rounded-md">
-                        hello@fusionhex.com
-                    </a>
-                    <nav class="flex justify-center md:justify-start space-x-6 mt-6">
-                        <a href="#about"
-                            class="text-slate-400 hover:text-white transition-colors text-sm focusable rounded-md">About</a>
-                        <a href="#projects"
-                            class="text-slate-400 hover:text-white transition-colors text-sm focusable rounded-md">Projects</a>
-                    </nav>
-                </div>
 
-                <div class="flex flex-col items-center md:items-end">
-                    <a href="#" class="flex items-center group mb-4 focusable rounded-md">
-                        <svg class="h-6 w-6 text-blue-500 group-hover:text-blue-400 transition-colors"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M21 8.66l-6.93 4v8l6.93-4V8.66zM3 8.66l6.93 4v8L3 16.66V8.66zM12 3l6.93 4L12 11 5.07 7 12 3z">
-                            </path>
-                        </svg>
-                        <span class="ml-2 text-lg font-bold text-slate-100 group-hover:text-slate-50 transition-colors">
-                            FusionHex
-                        </span>
-                    </a>
-                    <p class="text-sm text-slate-400">
-                        &copy; 2025 FusionHex. All rights reserved.
-                    </p>
+    <main>
+        <section id="hero" class="h-screen flex items-center justify-center text-center relative z-10 p-4">
+            <div id="hero-content-fixed" class="w-full text-center">
+
+                <h1 id="company-name"
+                    class="text-7xl sm:text-8xl md:text-[12rem] md:leading-none font-black text-white mb-16">
+                    FusionHex
+                </h1>
+
+                <p id="hero-subtitle" class="text-xl md:text-2xl mt-4 text-gray-300 max-w-2xl mx-auto">
+                    Crafting the future of digital interaction through innovative games, apps, and tools.
+                </p>
+
+            </div>
+
+            <div id="hero-gradient-blur"></div>
+
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
+                <a href="#about" aria-label="Scroll down to About section">
+                    <svg class="w-10 h-10 text-orange-400 scroll-down-arrow" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M7.25007 2.38782C8.54878 2.0992 10.1243 2 12 2C13.8757 2 15.4512 2.0992 16.7499 2.38782C18.06 2.67897 19.1488 3.176 19.9864 4.01358C20.824 4.85116 21.321 5.94002 21.6122 7.25007C21.9008 8.54878 22 10.1243 22 12C22 13.8757 21.9008 15.4512 21.6122 16.7499C21.321 18.06 20.824 19.1488 19.9864 19.9864C19.1488 20.824 18.06 21.321 16.7499 21.6122C15.4512 21.9008 13.8757 22 12 22C10.1243 22 8.54878 21.9008 7.25007 21.6122C5.94002 21.321 4.85116 20.824 4.01358 19.9864C3.176 19.1488 2.67897 18.06 2.38782 16.7499C2.0992 15.4512 2 13.8757 2 12C2 10.1243 2.0992 8.54878 2.38782 7.25007C2.67897 5.94002 3.176 4.85116 4.01358 4.01358C4.85116 3.176 5.94002 2.67897 7.25007 2.38782ZM13 8C13 7.44772 12.5523 7 12 7C11.4477 7 11 7.44772 11 8L11 13.5858L9.70711 12.2929C9.31658 11.9024 8.68342 11.9024 8.29289 12.2929C7.90237 12.6834 7.90237 13.3166 8.29289 13.7071L11.2059 16.6201C11.2209 16.6351 11.2363 16.6497 11.252 16.6637C11.4352 16.87 11.7024 17 12 17C12.2976 17 12.5648 16.87 12.748 16.6637C12.7637 16.6497 12.7791 16.6351 12.7941 16.6201L15.7071 13.7071C16.0976 13.3166 16.0976 12.6834 15.7071 12.2929C15.3166 11.9024 14.6834 11.9024 14.2929 12.2929L13 13.5858L13 8Z"
+                                fill="currentColor"></path>
+                        </g>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <section id="about" class="py-24 px-6 content-section">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-6 text-orange-400">Who We Are</h2>
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    FusionHex is a collective of passionate developers, designers, and thinkers dedicated to pushing the
+                    boundaries of technology. We believe in building high-quality, user-centric digital experiences that
+                    are both functional and beautiful. From immersive games to productivity-boosting apps and powerful
+                    developer tools, our focus is on innovation and excellence. We thrive on complex challenges and turn
+                    ambitious ideas into reality.
+                </p>
+            </div>
+        </section>
+
+        <section id="services" class="py-24 px-6 content-section">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 text-white">What We Build</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                    <div class="service-card p-8 rounded-2xl border border-gray-700 shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-orange-400">Game Development</h3>
+                        <p class="text-gray-300">
+                            Engaging and immersive games for PC, console, and mobile. We handle everything from concept
+                            and design to development and deployment.
+                        </p>
+                    </div>
+
+                    <div class="service-card p-8 rounded-2xl border border-gray-700 shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-orange-400">App Development</h3>
+                        <p class="text-gray-300">
+                            Intuitive and powerful mobile and web applications that solve real-world problems and
+                            delight users.
+                        </p>
+                    </div>
+
+                    <div class="service-card p-8 rounded-2xl border border-gray-700 shadow-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-orange-400">Developer Tools</h3>
+                        <p class="text-gray-300">
+                            Robust and efficient tools that streamline workflows, boost productivity, and empower other
+                            developers to build better.
+                        </p>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <section id="tools" class="py-24 px-6 content-section">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-6 text-orange-400">Our Tools</h2>
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    [A gallery or list of featured tools would go here.]
+                </p>
+            </div>
+        </section>
+
+        <section id="contact" class="py-24 px-6 content-section">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-6 text-white">Get In Touch</h2>
+                <p class="text-lg text-gray-300 leading-relaxed mb-8">
+                    Have an idea for a project? Let's talk about it.
+                </p>
+                <a href="mailto:hello@fusionhex.com"
+                    class="btn-primary text-white font-bold py-3 px-8 rounded-full text-lg">
+                    Start a Conversation
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 px-6 content-section">
+        <div class="max-w-6xl mx-auto text-center text-gray-400">
+            <p>&copy; 2025 FusionHex. All rights reserved.</p>
         </div>
     </footer>
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // --- Cache Elements ---
-            const menuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const hamburgerIcon = document.getElementById('hamburger-icon');
-            const closeIcon = document.getElementById('close-icon');
-            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
-            const parallaxBg = document.getElementById('parallax-bg');
-            const heroTitle = document.getElementById('hero-title');
-            const heroSection = document.getElementById('home');
+        document.addEventListener('DOMContentLoaded', () => {
 
-            // --- MODIFIED ---: Cache new/changed elements
-            const mainContent = document.getElementById('main-content');
-            const footer = document.getElementById('contact');
-            const menuOverlay = document.getElementById('menu-overlay'); // NEW
-            let footerTop = footer.offsetTop;
+            // --- Mobile Sidebar Navigation ---
+            const menuBtn = document.getElementById('menu-btn');
+            const closeBtn = document.getElementById('close-btn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
 
-
-            // --- Mobile Menu Toggle ---
-            function toggleMenu(isOpen) {
-                if (isOpen) {
-                    mobileMenu.classList.remove('translate-x-full');
-                    hamburgerIcon.classList.add('hidden');
-                    closeIcon.classList.remove('hidden');
-                    menuButton.setAttribute('aria-expanded', 'true');
-
-                    // --- NEW: Show overlay ---
-                    menuOverlay.style.display = 'block';
-                    requestAnimationFrame(() => {
-                        menuOverlay.style.opacity = 1;
-                    });
-
-                } else {
-                    mobileMenu.classList.add('translate-x-full');
-                    hamburgerIcon.classList.remove('hidden');
-                    closeIcon.classList.add('hidden');
-                    menuButton.setAttribute('aria-expanded', 'false');
-
-                    // --- NEW: Hide overlay ---
-                    menuOverlay.style.opacity = 0;
-                    setTimeout(() => {
-                        menuOverlay.style.display = 'none';
-                    }, 300); // Match transition duration
-                }
+            function openSidebar() {
+                sidebar.classList.remove('translate-x-full');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             }
 
-            menuButton.addEventListener('click', () => {
-                const isOpen = menuButton.getAttribute('aria-expanded') === 'false';
-                toggleMenu(isOpen);
+            function closeSidebar() {
+                sidebar.classList.add('translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+
+            menuBtn.addEventListener('click', openSidebar);
+            closeBtn.addEventListener('click', closeSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', closeSidebar);
             });
 
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    toggleMenu(false);
-                });
-            });
 
-            // --- NEW: Add click listener for the overlay ---
-            menuOverlay.addEventListener('click', () => {
-                toggleMenu(false);
-            });
+            // --- NEW: Ripple Button Effect ---
+            function createRipple(event) {
+                const button = event.currentTarget;
 
-            // --- Ripple Effect ---
-            document.querySelectorAll('.ripple').forEach(button => {
-                button.addEventListener('click', function (e) {
-                    // Remove any existing ripples
-                    const oldRipple = this.querySelector('.ripple-effect');
-                    if (oldRipple) {
-                        oldRipple.remove();
+                // Create ripple span
+                const circle = document.createElement("span");
+                const diameter = Math.max(button.clientWidth, button.clientHeight);
+                const radius = diameter / 2;
+
+                // Get click position relative to button
+                const rect = button.getBoundingClientRect();
+                const rippleX = event.clientX - rect.left - radius;
+                const rippleY = event.clientY - rect.top - radius;
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${rippleX}px`;
+                circle.style.top = `${rippleY}px`;
+                circle.classList.add("ripple");
+
+                // Remove old ripple if one exists
+                const oldRipple = button.querySelector(".ripple");
+                if (oldRipple) {
+                    oldRipple.remove();
+                }
+
+                // Add new ripple
+                button.appendChild(circle);
+
+                // Clean up the ripple element after animation
+                setTimeout(() => {
+                    if (circle.parentElement) {
+                        circle.remove();
                     }
+                }, 600);
+            }
 
-                    const span = document.createElement('span');
-                    span.classList.add('ripple-effect');
-
-                    const diameter = Math.max(this.clientWidth, this.clientHeight);
-                    const radius = diameter / 2;
-
-                    span.style.width = span.style.height = `${diameter}px`;
-                    span.style.left = `${e.clientX - (this.getBoundingClientRect().left + radius)}px`;
-                    span.style.top = `${e.clientY - (this.getBoundingClientRect().top + radius)}px`;
-
-                    this.appendChild(span);
-
-                    span.addEventListener('animationend', () => {
-                        span.remove();
-                    });
-                });
+            const rippleButtons = document.querySelectorAll('.btn-primary');
+            rippleButtons.forEach(button => {
+                // We use 'mousedown' for a more immediate feel, but 'click' also works
+                button.addEventListener('mousedown', createRipple);
             });
+            // --- END: Ripple Button Effect ---
 
-            // --- Parallax & Hero Animation on Scroll ---
-            window.addEventListener('scroll', function () {
+
+            // --- Scroll Effects ---
+            const heroContent = document.getElementById('hero-content-fixed');
+            const heroName = document.getElementById('company-name');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const heroSection = document.getElementById('hero');
+
+            // --- SCROLL TWEAKS ---
+            const scaleSpeed = 1.0; // How fast the title scales down
+            const fadeSpeed = 1.0; // How fast the title (FusionHex) fades
+            const subtitleFadeSpeed = 2.5; // How fast the subtitle fades (2.5x faster)
+            const minScale = 0.0; // Scale down to 0%
+            // --- END SCROLL TWEAKS ---
+
+            // We need to store the calculated travel distance
+            let titleTravelDistanceY = 0;
+
+            /**
+             * This function measures the h1's exact starting position and
+             * calculates the distance needed to travel to the screen's center (50% vh).
+             */
+            function calculateTravel() {
+                // 1. Ensure all initial styles are applied *before* measuring
+                if (heroContent) {
+                    heroContent.style.position = 'fixed';
+                    heroContent.style.top = '40%';
+                    heroContent.style.left = '50%';
+                    heroContent.style.transform = 'translate(-50%, -50%)';
+                    heroContent.style.opacity = 1;
+                }
+
+                // 2. Find the h1's starting Y-center position on the screen
+                const h1Rect = heroName.getBoundingClientRect();
+                const h1_initial_center_y = h1Rect.top + (h1Rect.height / 2);
+
+                // 3. Define the target Y-center (50% of the screen)
+                const target_y = window.innerHeight * 0.5;
+
+                // 4. The distance is the difference
+                titleTravelDistanceY = target_y - h1_initial_center_y;
+            }
+
+            // Calculate on load.
+            // We use a small timeout to ensure fonts and layout are settled before we measure.
+            setTimeout(calculateTravel, 100);
+
+            // Re-calculate on resize
+            window.addEventListener('resize', calculateTravel);
+
+
+            function handleScroll() {
                 const scrollY = window.scrollY;
-                const windowHeight = window.innerHeight;
+                const heroHeight = heroSection.offsetHeight;
 
-                // 1. Parallax Background
-                if (parallaxBg) {
-                    parallaxBg.style.transform = `translateY(${scrollY * 0.4}px)`;
+                // Finish animation by 80% scroll of hero section
+                const scrollProgress = Math.min(1, scrollY / (heroHeight * 0.8));
+
+                const scale = Math.max(minScale, 1 - (scrollProgress * scaleSpeed));
+                const titleOpacity = Math.max(0, 1 - (scrollProgress * fadeSpeed));
+                const subtitleOpacity = Math.max(0, 1 - (scrollProgress * subtitleFadeSpeed));
+
+                // 5. Moves down by the dynamically calculated distance
+                const titleTranslateY = scrollProgress * titleTravelDistanceY;
+
+                // 6. Animate the Title (h1)
+                if (heroName) {
+                    heroName.style.opacity = titleOpacity;
+                    // Apply BOTH transforms (move and scale) to the h1 itself
+                    heroName.style.transform = `translateY(${titleTranslateY}px) scale(${scale})`;
                 }
 
-                // 2. Hero Title Animation (Scale, Move, Fade)
-                if (heroTitle && scrollY < windowHeight) {
-                    const scale = 1 + scrollY * 0.0015;
-                    const translateY = -scrollY * 0.5;
-                    const opacity = Math.max(0, 1 - (scrollY / (windowHeight / 1.5)));
+                // 7. Animate the Subtitle (p)
+                if (heroSubtitle) {
+                    heroSubtitle.style.opacity = subtitleOpacity;
+                }
+            }
+            window.addEventListener('scroll', handleScroll);
+            handleScroll();
 
-                    heroTitle.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                    heroTitle.style.opacity = opacity;
+
+            // --- Hero Canvas Animation ---
+            const canvas = document.getElementById('hero-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // --- State variables for time-based animation ---
+            let hexagons = [];
+            let lastTime = 0; // Stores the timestamp of the last frame
+            let timeToNextSpawn = 0; // Tracks when to spawn the next hexagon
+
+
+            // --- ANIMATION TWEAKS ---
+            const spawnInterval = 900; // (ms) How often a new hexagon appears.
+            const warmUpTime = 20000; // (ms) Simulate on load to prevent "cold start". (20s)
+            const baseSize = Math.max(window.innerWidth, window.innerHeight) * 0.6; // Max size hexagon grows to.
+            const hexagonLifespan = 20000; // (ms) Total lifespan of a hexagon. (20s)
+
+            // --- COLOR TWEAKS ---
+            const colorTransitionStart = 0.25; // (0.0-1.0) When color transition starts (25% of life).
+            const colorTransitionDuration = 0.5; // (0.0-1.0) How long the transition takes (50% of life).
+
+            // --- Hexagon Corner Radius ---
+            const cornerRadiusFraction = 0.03; // (0.0-1.0) How rounded corners are. 0.0 = sharp.
+            // --- END ANIMATION TWEAKS ---
+
+
+            // Hexagon class
+            class Hexagon {
+                constructor(x, y, initialSize) {
+                    this.x = x;
+                    this.y = y;
+                    this.initialSize = initialSize;
+                    this.size = 0;
+
+                    this.lifespan = hexagonLifespan;
+                    this.age = 0; // Age in milliseconds
+
+                    this.progress = 0; // Time-based progress (0.0 to 1.0)
+                    this.alpha = 0; // Final transparency
                 }
 
-                // 3. Footer Parallax
-                const scrollBottom = scrollY + windowHeight;
-                if (footer && scrollBottom > footerTop) {
-                    const amountVisible = scrollBottom - footerTop;
-                    const translateY = amountVisible * 0.3;
-                    footer.style.transform = `translateY(${translateY}px)`;
-                } else if (footer) {
-                    footer.style.transform = 'translateY(0px)';
-                }
-            });
+                /**
+                 * Updates the hexagon's state based on elapsed time.
+                 * @param {number} deltaTime - The time elapsed (in ms) since the last frame.
+                 */
+                update(deltaTime) {
+                    this.age += deltaTime;
+                    this.progress = this.age / this.lifespan; // Linear time progress
 
-            // --- Smooth Scroll for Nav Links ---
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    if (!this.classList.contains('mobile-menu-link')) {
-                        e.preventDefault();
+                    if (this.progress > 1) {
+                        this.progress = 1;
                     }
 
-                    const targetId = this.getAttribute('href');
+                    // How much the hexagon speeds up. 1.0 = linear. > 1.0 = eases in (starts slow, ends fast).
+                    const accelerationFactor = 1.5;
 
-                    if (targetId && targetId !== '#') {
-                        const targetElement = document.querySelector(targetId);
-                        if (targetElement) {
-                            if (this.classList.contains('mobile-menu-link')) {
-                                setTimeout(() => {
-                                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                                }, 300);
-                            } else {
-                                targetElement.scrollIntoView({ behavior: 'smooth' });
-                            }
-                        }
-                    } else if (targetId === '#') {
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
+                    // Calculate size based on an easing function for acceleration
+                    const easedProgress = Math.pow(this.progress, accelerationFactor);
+                    this.size = easedProgress * this.initialSize;
+
+                    // --- FADE TWEAKS ---
+                    const fadeInDuration = 0.2; // (0.0-1.0) Fades in for first 20% of its life
+                    const fadeOutStart = 0.80; // (0.0-1.0) Starts fading out at 80% of its life
+                    // --- END FADE TWEAKS ---
+
+                    if (this.progress < fadeInDuration) {
+                        this.alpha = this.progress / fadeInDuration;
+                    } else if (this.progress > fadeOutStart) {
+                        const fadeProgress = (this.progress - fadeOutStart) / (1 - fadeOutStart);
+                        this.alpha = 1 - fadeProgress;
+                    } else {
+                        this.alpha = 1;
+                    }
+
+                    this.alpha = Math.max(0, Math.min(1, this.alpha));
+                }
+
+                /**
+                 * MODIFIED draw() function with rounded corners
+                 */
+                draw() {
+                    const vertices = [];
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (Math.PI / 3) * i + (Math.PI / 6);
+                        vertices.push({
+                            x: this.x + this.size * Math.cos(angle),
+                            y: this.y + this.size * Math.sin(angle)
                         });
                     }
-                });
-            });
 
-            // --- Simple Fade-in Animations on Load ---
-            document.querySelector('.animate-fade-in').style.opacity = 1;
-            setTimeout(() => {
-                document.querySelector('.animate-fade-in-delay').style.opacity = 1;
-            }, 300);
-            setTimeout(() => {
-                document.querySelector('.animate-fade-in-delay-2').style.opacity = 1;
-            }, 600);
+                    ctx.beginPath();
 
-            // --- Smoke Canvas Effect ---
-            const smokeCanvas = document.getElementById('smoke-canvas');
-            let canvasWidth, canvasHeight; // Make them accessible to resize listener
+                    // Calculate inset points for each vertex
+                    const points = [];
+                    for (let i = 0; i < 6; i++) {
+                        const v_curr = vertices[i];
+                        const v_prev = vertices[(i + 5) % 6];
+                        const v_next = vertices[(i + 1) % 6];
 
-            if (smokeCanvas) {
-                const ctx = smokeCanvas.getContext('2d');
-                let particles = [];
-                let mouse = { x: null, y: null, radius: 50 };
-                canvasWidth = smokeCanvas.offsetWidth;
-                canvasHeight = smokeCanvas.offsetHeight;
-                smokeCanvas.width = canvasWidth;
-                smokeCanvas.height = canvasHeight;
+                        // Point on edge [prev -> curr]
+                        const p_start = {
+                            x: v_curr.x - (v_curr.x - v_prev.x) * cornerRadiusFraction,
+                            y: v_curr.y - (v_curr.y - v_prev.y) * cornerRadiusFraction
+                        };
 
-                // Update mouse position (relative to canvas)
-                const heroRect = heroSection.getBoundingClientRect();
-                window.addEventListener('mousemove', (e) => {
-                    mouse.x = e.clientX - heroRect.left;
-                    mouse.y = e.clientY - heroRect.top;
-                });
-                window.addEventListener('mouseout', () => {
-                    mouse.x = null;
-                    mouse.y = null;
-                });
+                        // Point on edge [curr -> next]
+                        const p_next = {
+                            x: v_curr.x + (v_next.x - v_curr.x) * cornerRadiusFraction,
+                            y: v_curr.y + (v_next.y - v_curr.y) * cornerRadiusFraction
+                        };
 
-                class Particle {
-                    constructor(x, y) {
-                        this.x = x;
-                        this.y = y;
-                        this.size = Math.random() * 2 + 1;
-                        this.speedX = (Math.random() * 2 - 1) * 0.5;
-                        this.speedY = Math.random() * -1 - 0.5;
-                        this.alpha = 1;
-                        this.color = 'rgba(100, 116, 139, 0.3)'; // slate-500 with opacity
+                        points.push({ start: p_start, corner: v_curr, next: p_next });
                     }
-                    update() {
-                        if (mouse.x !== null) {
-                            let dx = this.x - mouse.x;
-                            let dy = this.y - mouse.y;
-                            let distance = Math.sqrt(dx * dx + dy * dy);
-                            if (distance < mouse.radius) {
-                                this.x += dx / distance * 1.5;
-                                this.y += dy / distance * 1.5;
-                            }
-                        }
-                        this.x += this.speedX;
-                        this.y += this.speedY;
-                        this.alpha -= 0.005;
-                        if (this.size < 10) {
-                            this.size += 0.05;
-                        }
+
+                    // Start at the 'next' point of the *last* vertex
+                    ctx.moveTo(points[5].next.x, points[5].next.y);
+
+                    for (let i = 0; i < 6; i++) {
+                        // Line from previous curve's end to the start of this vertex's curve
+                        ctx.lineTo(points[i].start.x, points[i].start.y);
+                        // Curve around the corner
+                        ctx.quadraticCurveTo(points[i].corner.x, points[i].corner.y, points[i].next.x, points[i].next.y);
                     }
-                    draw() {
-                        ctx.globalAlpha = this.alpha;
-                        ctx.fillStyle = this.color;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
+                    // The path closes automatically by looping
+
+                    // --- COLOR TWEAKS ---
+                    const colorProgress = Math.max(0, Math.min(1, (this.progress - colorTransitionStart) / colorTransitionDuration));
+                    const hue = 39 - (179 * colorProgress); // Orange -> Red -> Blue
+                    const color = `hsla(${hue}, 100%, 60%, ${this.alpha})`;
+
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.shadowColor = color;
+                    ctx.shadowBlur = 15;
+                    // --- END COLOR TWEAKS ---
+
+                    ctx.stroke();
                 }
 
-                function createParticles() {
-                    if (particles.length < 150) {
-                        let x = (canvasWidth / 2) + (Math.random() * 200 - 100);
-                        let y = canvasHeight - 50 + (Math.random() * 50);
-                        particles.push(new Particle(x, y));
-                    }
+                /**
+                 * Checks if the hexagon has exceeded its lifespan.
+                 * @returns {boolean}
+                 */
+                isDead() {
+                    return this.age >= this.lifespan;
                 }
-
-                function animateParticles() {
-                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                    createParticles();
-                    for (let i = 0; i < particles.length; i++) {
-                        particles[i].update();
-                        particles[i].draw();
-                        if (particles[i].alpha <= 0) {
-                            particles.splice(i, 1);
-                            i--;
-                        }
-                    }
-                    requestAnimationFrame(animateParticles);
-                }
-
-                // Start the animation
-                animateParticles();
             }
 
-            // --- NEW: Consolidated Resize Handler ---
-            window.addEventListener('resize', () => {
-                // Handle smoke canvas resize
-                if (smokeCanvas) {
-                    canvasWidth = smokeCanvas.offsetWidth;
-                    canvasHeight = smokeCanvas.offsetHeight;
-                    smokeCanvas.width = canvasWidth;
-                    smokeCanvas.height = canvasHeight;
+            /**
+             * Spawns a new hexagon and fast-forwards its age if needed (for warm-up).
+             * @param {number} [ageOffset=0] - The starting age of the hexagon in ms.
+             */
+            function spawnHexagon(ageOffset = 0) {
+                const hex = new Hexagon(canvas.width / 2, canvas.height / 2, baseSize);
+                if (ageOffset > 0) {
+                    hex.update(ageOffset); // Fast-forward
                 }
-                // Update footer position
-                footerTop = footer.offsetTop;
-
-                // Handle mobile menu close on wider screens (md breakpoint = 768px)
-                if (window.innerWidth >= 768 && menuButton.getAttribute('aria-expanded') === 'true') {
-                    toggleMenu(false);
-                }
-            });
-
-        }); // --- End DOMContentLoaded ---
-
-        // Add temporary styles for the animations
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .animate-fade-in, .animate-fade-in-delay, .animate-fade-in-delay-2 {
-                opacity: 0;
-                transition: opacity 0.8s ease-out;
+                hexagons.push(hex);
             }
-        `;
-        document.head.appendChild(style);
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            function animate(timestamp) {
+                // --- 1. Calculate DeltaTime ---
+                let deltaTime;
+
+                if (lastTime === 0) {
+                    // This is the FIRST frame (page load)
+                    lastTime = timestamp;
+                    deltaTime = 0; // No time has passed yet
+
+                    // Set first spawn time to be in the past to trigger warm-up
+                    timeToNextSpawn = timestamp - warmUpTime;
+                } else {
+                    // This is a subsequent frame
+                    deltaTime = timestamp - lastTime;
+                    lastTime = timestamp;
+                }
+
+                // --- FIX FOR TAB UNFOCUS ---
+                // If more than 1s has passed (1000ms), treat it as a pause.
+                const pauseThreshold = 1000;
+
+                if (deltaTime > pauseThreshold) {
+                    // This was a long pause (tab unfocused).
+                    // 1. Discard the huge delta. Update physics by 0 this frame.
+                    deltaTime = 0;
+
+                    // 2. Reschedule the NEXT spawn from "now" to prevent
+                    // a "catch-up" burst of hexagons.
+                    timeToNextSpawn = timestamp;
+                }
+
+
+                // --- 2. Clear Canvas ---
+                ctx.fillStyle = '#1a1716'; // New dark base (OLD: #111827)
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.shadowBlur = 0; // Reset shadow blur
+
+                // --- 3. Spawn New Hexagons ---
+                // This 'while' loop catches up on spawns during warm-up,
+                // but will only spawn ONE hexagon on tab resume.
+                while (timestamp > timeToNextSpawn) {
+                    // Pass the ageOffset. On warm-up, this is large.
+                    spawnHexagon(timestamp - timeToNextSpawn);
+                    timeToNextSpawn += spawnInterval;
+                }
+
+                // --- 4. Update and Draw Existing Hexagons ---
+                // On the resume frame, deltaTime will be 0, so nothing "jumps".
+                hexagons = hexagons.filter(hex => {
+                    hex.update(deltaTime);
+                    hex.draw();
+                    return !hex.isDead(); // Keep if not dead
+                });
+
+                // --- 5. Request Next Frame ---
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            requestAnimationFrame(animate); // Start animation
+        });
     </script>
-
 </body>
 
 </html>
